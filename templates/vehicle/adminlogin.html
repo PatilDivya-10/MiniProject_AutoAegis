@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+{% load widget_tweaks %}
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>AutoAegis - Admin Login</title>
+    <style media="screen">
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background: #f0f2f5;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .menu-container {
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 1000;
+        padding: 20px;
+      }
+
+      .menu-toggle {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .menu-line {
+        width: 25px;
+        height: 2px;
+        background: #2563EB;
+        margin: 3px 0;
+        transition: all 0.3s ease;
+        transform-origin: center;
+      }
+
+      .menu-toggle.active .menu-line:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+      }
+
+      .menu-toggle.active .menu-line:nth-child(2) {
+        opacity: 0;
+      }
+
+      .menu-toggle.active .menu-line:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+      }
+
+      .navbar {
+        position: fixed;
+        top: 0;
+        right: -250px;
+        width: 250px;
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: -2px 0 15px rgba(0,0,0,0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+        padding: 80px 15px 20px;
+        border-left: 1px solid rgba(0,0,0,0.1);
+        transform: translateX(100%);
+      }
+
+      .navbar.active {
+        right: 0;
+        transform: translateX(0);
+      }
+
+      .navbar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .navbar li {
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        transform: translateX(15px);
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+
+      .navbar.active li {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      .navbar li:nth-child(1) { transition-delay: 0.1s; }
+      .navbar li:nth-child(2) { transition-delay: 0.2s; }
+      .navbar li:nth-child(3) { transition-delay: 0.3s; }
+      .navbar li:nth-child(4) { transition-delay: 0.4s; }
+      .navbar li:nth-child(5) { transition-delay: 0.5s; }
+      .navbar li:nth-child(6) { transition-delay: 0.6s; }
+
+      .navbar a {
+        color: #1e293b;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        transition: all 0.3s ease;
+      }
+
+      .navbar a:hover {
+        color: #2563EB;
+        transform: translateX(5px);
+      }
+
+      .navbar a::before {
+        content: '';
+        width: 0;
+        height: 2px;
+        background: #2563EB;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        transition: width 0.3s ease;
+      }
+
+      .navbar a:hover::before {
+        width: 100%;
+      }
+
+      .page-title {
+        text-align: center;
+        margin: 40px 0;
+      }
+
+      .brand-name {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 36px;
+        font-weight: 800;
+        background: linear-gradient(45deg, #2563EB, #1d4ed8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        position: relative;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+
+      .brand-name::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(45deg, #2563EB, #1d4ed8);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.3s ease;
+      }
+
+      .brand-name:hover::after {
+        transform: scaleX(1);
+        transform-origin: left;
+      }
+
+      .section-title {
+        font-size: 24px;
+        color: #1e293b;
+        margin-top: 20px;
+      }
+
+      .welcome-text {
+        text-align: center;
+        color: #64748b;
+        margin: 20px auto;
+        max-width: 600px;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+
+      .login-container {
+        width: 100%;
+        max-width: 600px;
+        padding: 40px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        margin: 0 auto;
+      }
+
+      .login-container:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-5px);
+      }
+
+      .form-group {
+        margin-bottom: 30px;
+        width: 100%;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 12px;
+        color: #1e293b;
+        font-weight: 700;
+        font-size: 16px;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+      }
+
+      .form-control:focus {
+        border-color: #2563EB;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        outline: none;
+      }
+
+      .btn-login {
+        width: 100%;
+        padding: 12px;
+        background-color: #2563EB;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+        box-sizing: border-box;
+      }
+
+      .btn-login:hover {
+        background-color: #1d4ed8;
+        transform: translateY(-2px);
+      }
+
+      .content-wrapper {
+        flex: 1;
+        padding-bottom: 60px;
+      }
+
+      @media (max-width: 768px) {
+        .login-container {
+          padding: 30px 20px;
+        }
+        
+        .form-group {
+          margin-bottom: 25px;
+        }
+      }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="menu-container">
+      <div class="menu-toggle" onclick="toggleMenu()">
+        <div class="menu-line"></div>
+        <div class="menu-line"></div>
+        <div class="menu-line"></div>
+      </div>
+    </div>
+
+    <nav class="navbar">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/customersignup">Customer Signup</a></li>
+        <li><a href="/customerlogin">Customer Login</a></li>
+        <li><a href="/mechanicsignup">Mechanic Signup</a></li>
+        <li><a href="/mechaniclogin">Mechanic Login</a></li>
+        <li><a href="/adminlogin">Admin Login</a></li>
+      </ul>
+    </nav>
+
+    <div class="content-wrapper">
+      <div class="page-title">
+        <div class="brand-name">AutoAegis</div>
+        <h2 class="section-title">Admin Login</h2>
+        <p class="welcome-text">Welcome to the admin portal. Please login to access the dashboard and manage the system.</p>
+      </div>
+
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-8">
+            <div class="login-container">
+              <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="id_username">Username</label>
+                  {% render_field form.username class="form-control" placeholder="Enter your username" %}
+                </div>
+                <div class="form-group">
+                  <label for="id_password">Password</label>
+                  {% render_field form.password class="form-control" placeholder="Enter your password" %}
+                </div>
+                <button type="submit" class="btn-login">Login</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleMenu() {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navbar = document.querySelector('.navbar');
+        menuToggle.classList.toggle('active');
+        navbar.classList.toggle('active');
+      }
+
+      document.addEventListener('click', function(event) {
+        const navbar = document.querySelector('.navbar');
+        const menuToggle = document.querySelector('.menu-toggle');
+        
+        if (!navbar.contains(event.target) && !menuToggle.contains(event.target)) {
+          navbar.classList.remove('active');
+          menuToggle.classList.remove('active');
+        }
+      });
+    </script>
+
+    {% include "vehicle/footer.html" %}
+  </body>
+</html>

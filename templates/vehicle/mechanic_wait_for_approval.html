@@ -1,0 +1,59 @@
+{% extends "vehicle/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Account Status</h4>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-user-clock fa-4x text-primary mb-3"></i>
+                        <h2 class="card-title">Hello, {{request.user.first_name}}</h2>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading">Account Under Review</h5>
+                        <p class="mb-0">Your account is currently being reviewed by our team. We'll notify you once your profile has been approved.</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <p class="text-muted">What happens next?</p>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Profile verification</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Background check</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Skill assessment</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="/logout" class="btn btn-outline-primary">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        border: none;
+    }
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+    .alert {
+        border-radius: 10px;
+    }
+    .btn {
+        border-radius: 8px;
+        padding: 8px 20px;
+    }
+</style>
+{% endblock content %}

@@ -1,0 +1,58 @@
+{% extends 'vehicle/adminbase.html' %}
+{% block content %}
+
+<div class="container mt-5 pt-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-sm-flex align-items-center justify-content-between">
+                <h1 class="h3 mb-0 text-gray-800">Customer Service Enquiries</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0">Service Request Details</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="border-0">#</th>
+                                    <th class="border-0">Customer Name</th>
+                                    <th class="border-0">Vehicle Number</th>
+                                    <th class="border-0">Date</th>
+                                    <th class="border-0">Problem Description</th>
+                                    <th class="border-0">Cost</th>
+                                    <th class="border-0">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for c,r in data %}
+                                <tr>
+                                    <td class="text-muted">{{ forloop.counter }}</td>
+                                    <td>{{c.get_name}}</td>
+                                    <td>{{r.vehicle_no}}</td>
+                                    <td>{{r.date}}</td>
+                                    <td>{{r.problem_description}}</td>
+                                    <td>${{r.cost}}</td>
+                                    <td>
+                                        <span class="badge {% if r.status == 'Approved' %}bg-success{% elif r.status == 'Pending' %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{r.status}}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

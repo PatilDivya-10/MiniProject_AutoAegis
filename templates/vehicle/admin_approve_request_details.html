@@ -1,0 +1,88 @@
+{% extends 'vehicle/adminbase.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="container mt-5 pt-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-sm-flex align-items-center justify-content-between">
+                <h1 class="h3 mb-0 text-gray-800">Review Service Request</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0">Service Request Details</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="mechanic" class="form-label">Assign Mechanic</label>
+                                    {% render_field adminenquiry.mechanic class="form-select" %}
+                                    <div class="form-text text-muted">Select a mechanic to handle this service request</div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="cost" class="form-label">Service Cost</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        {% render_field adminenquiry.cost class="form-control" placeholder="Enter service cost" %}
+                                    </div>
+                                    <div class="form-text text-muted">Enter the estimated service cost</div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="mb-4">
+                                    <label for="status" class="form-label">Request Status</label>
+                                    {% render_field adminenquiry.status class="form-select" %}
+                                    <div class="form-text text-muted">Update the current status of this request</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'admin-approve-request' %}" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Requests
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check-circle me-2"></i>Submit Review
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control:focus, .form-select:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    }
+    .input-group-text {
+        background-color: #f8f9fa;
+        border-right: none;
+    }
+    .form-control {
+        border-left: none;
+    }
+    .form-control:focus + .input-group-text {
+        border-color: #4e73df;
+    }
+    .form-select {
+        background-color: #fff;
+    }
+</style>
+
+{% endblock content %}

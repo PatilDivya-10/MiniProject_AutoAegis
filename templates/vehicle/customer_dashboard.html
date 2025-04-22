@@ -1,0 +1,220 @@
+{% extends 'vehicle/customerbase.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .stat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-size: 1.5rem;
+    }
+
+    .stat-title {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+        color: #212529;
+    }
+
+    .recent-requests {
+        background: #fff;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .recent-requests h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #212529;
+    }
+
+    .request-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .request-table th {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #6c757d;
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .request-table td {
+        padding: 1rem 0.75rem;
+        font-size: 0.875rem;
+        color: #495057;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .request-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-approved {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-completed {
+        background: #cce5ff;
+        color: #004085;
+    }
+
+    .status-repairing {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .btn-view {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 4px;
+        background: #e9ecef;
+        color: #495057;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-view:hover {
+        background: #dee2e6;
+        color: #212529;
+    }
+</style>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-header">
+            <div>
+                <p class="stat-title">Total Requests</p>
+                <h3 class="stat-value">{{total_request}}</h3>
+            </div>
+            <div class="stat-icon" style="background: #e8f5e9; color: #2e7d32;">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+				</div>
+			</div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <div>
+                <p class="stat-title">Pending Requests</p>
+                <h3 class="stat-value">{{pending_request}}</h3>
+            </div>
+            <div class="stat-icon" style="background: #fff3e0; color: #ef6c00;">
+                <i class="fas fa-clock"></i>
+            </div>
+				</div>
+			</div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <div>
+                <p class="stat-title">Approved Requests</p>
+                <h3 class="stat-value">{{approved_request}}</h3>
+            </div>
+            <div class="stat-icon" style="background: #e3f2fd; color: #1976d2;">
+						<i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <div>
+                <p class="stat-title">Completed Services</p>
+                <h3 class="stat-value">{{completed_request}}</h3>
+            </div>
+            <div class="stat-icon" style="background: #f3e5f5; color: #7b1fa2;">
+                <i class="fas fa-flag-checkered"></i>
+				</div>
+			</div>
+				</div>
+			</div>
+
+<div class="recent-requests">
+    <h2>Recent Requests</h2>
+    <table class="request-table">
+        <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>Vehicle</th>
+                <th>Problem</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests %}
+            <tr>
+                <td>#{{request.id}}</td>
+                <td>{{request.vehicle_no}}</td>
+                <td>{{request.problem_description}}</td>
+                <td>{{request.request_date}}</td>
+                <td>
+                    <span class="status-badge {% if request.status == 'Pending' %}status-pending{% elif request.status == 'Approved' %}status-approved{% elif request.status == 'Repairing' %}status-repairing{% else %}status-completed{% endif %}">
+                        {{request.status}}
+                    </span>
+                </td>
+                <td>
+                    <a href="{% url 'customer-view-service' request.id %}" class="btn-view">
+                        <i class="fas fa-eye"></i> View
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+	</div>
+{% endblock %}

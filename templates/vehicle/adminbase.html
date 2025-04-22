@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>AutoAegis - Admin Panel</title>
+
+	<!-- Import lib -->
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
+	<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-free/css/all.min.css' %}">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+	
+	<style>
+		:root {
+			--primary-color: #2563EB;
+			--primary-dark: #1d4ed8;
+			--secondary-color: #64748b;
+			--background-color: #f8fafc;
+			--card-background: #ffffff;
+			--text-color: #1e293b;
+			--border-color: #e2e8f0;
+			--success-color: #10b981;
+			--warning-color: #f59e0b;
+			--danger-color: #ef4444;
+			--info-color: #3b82f6;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: 'Roboto', sans-serif;
+		}
+
+		body {
+			background-color: var(--background-color);
+			color: var(--text-color);
+			min-height: 100vh;
+			display: flex;
+		}
+
+		/* Sidebar Styles */
+		.sidebar {
+			width: 280px;
+			background: var(--card-background);
+			height: 100vh;
+			position: fixed;
+			left: 0;
+			top: 0;
+			box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+			transition: all 0.3s ease;
+			z-index: 1000;
+		}
+
+		.sidebar-header {
+			padding: 20px;
+			text-align: center;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		.brand-name {
+			font-family: 'Montserrat', sans-serif;
+			font-size: 24px;
+			font-weight: 800;
+			background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+
+		.sidebar-nav {
+			list-style: none;
+			padding: 20px 0;
+		}
+
+		.sidebar-nav-item {
+			margin: 5px 0;
+		}
+
+		.sidebar-nav-link {
+			display: flex;
+			align-items: center;
+			padding: 12px 20px;
+			color: var(--text-color);
+			text-decoration: none;
+			transition: all 0.3s ease;
+		}
+
+		.sidebar-nav-link:hover {
+			background: rgba(37, 99, 235, 0.1);
+			color: var(--primary-color);
+		}
+
+		.sidebar-nav-link i {
+			width: 24px;
+			margin-right: 12px;
+			font-size: 18px;
+		}
+
+		.sidebar-nav-link.active {
+			background: var(--primary-color);
+			color: white;
+		}
+
+		/* Main Content Styles */
+		.main-content {
+			flex: 1;
+			margin-left: 280px;
+			padding: 20px;
+			transition: all 0.3s ease;
+		}
+
+		/* Top Navigation */
+		.top-nav {
+			background: var(--card-background);
+			padding: 15px 20px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+			margin-bottom: 20px;
+			border-radius: 8px;
+		}
+
+		.search-box {
+			position: relative;
+			width: 300px;
+		}
+
+		.search-box input {
+			width: 100%;
+			padding: 10px 15px;
+			padding-left: 40px;
+			border: 2px solid var(--border-color);
+			border-radius: 6px;
+			font-size: 14px;
+			transition: all 0.3s ease;
+		}
+
+		.search-box input:focus {
+			border-color: var(--primary-color);
+			outline: none;
+			box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+		}
+
+		.search-box i {
+			position: absolute;
+			left: 15px;
+			top: 50%;
+			transform: translateY(-50%);
+			color: var(--secondary-color);
+		}
+
+		.user-menu {
+			display: flex;
+			align-items: center;
+			gap: 20px;
+		}
+
+		.user-avatar {
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			overflow: hidden;
+			cursor: pointer;
+		}
+
+		.user-avatar img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		.theme-toggle {
+			cursor: pointer;
+			padding: 8px;
+			border-radius: 50%;
+			transition: all 0.3s ease;
+		}
+
+		.theme-toggle:hover {
+			background: rgba(0,0,0,0.1);
+		}
+
+		/* Responsive Design */
+		@media (max-width: 768px) {
+			.sidebar {
+				transform: translateX(-100%);
+			}
+
+			.sidebar.active {
+				transform: translateX(0);
+			}
+
+			.main-content {
+				margin-left: 0;
+			}
+
+			.search-box {
+				width: 200px;
+			}
+		}
+
+		/* Content Area */
+		.content {
+			background: var(--card-background);
+			border-radius: 8px;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+			padding: 20px;
+			margin-bottom: 20px;
+		}
+	</style>
+</head>
+<body>
+	<!-- Sidebar -->
+	<div class="sidebar">
+		<div class="sidebar-header">
+			<div class="brand-name">AutoAegis</div>
+		</div>
+		<ul class="sidebar-nav">
+			<li class="sidebar-nav-item">
+				<a href="/admin-dashboard" class="sidebar-nav-link {% if request.path == '/admin-dashboard' %}active{% endif %}">
+						<i class="fas fa-tachometer-alt"></i>
+					<span>Dashboard</span>
+				</a>
+			</li>
+			<li class="sidebar-nav-item">
+				<a href="/admin-customer" class="sidebar-nav-link {% if request.path == '/admin-customer' %}active{% endif %}">
+						<i class="fas fa-users"></i>
+					<span>Customers</span>
+				</a>
+			</li>
+			<li class="sidebar-nav-item">
+				<a href="/admin-mechanic" class="sidebar-nav-link {% if request.path == '/admin-mechanic' %}active{% endif %}">
+					<i class="fas fa-tools"></i>
+					<span>Mechanics</span>
+				</a>
+			</li>
+			<li class="sidebar-nav-item">
+				<a href="/admin-request" class="sidebar-nav-link {% if request.path == '/admin-request' %}active{% endif %}">
+					<i class="fas fa-clipboard-list"></i>
+					<span>Requests</span>
+				</a>
+			</li>
+			<li class="sidebar-nav-item">
+				<a href="/admin-report" class="sidebar-nav-link {% if request.path == '/admin-report' %}active{% endif %}">
+					<i class="fas fa-chart-bar"></i>
+					<span>Reports</span>
+				</a>
+			</li>
+			<li class="sidebar-nav-item">
+				<a href="/admin-feedback" class="sidebar-nav-link {% if request.path == '/admin-feedback' %}active{% endif %}">
+					<i class="fas fa-comments"></i>
+					<span>Feedback</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<!-- Main Content -->
+	<div class="main-content">
+		<!-- Top Navigation -->
+		<div class="top-nav">
+			<div class="search-box">
+				<i class="fas fa-search"></i>
+				<input type="text" placeholder="Search...">
+			</div>
+			<div class="user-menu">
+				<div class="theme-toggle">
+					<i class="fas fa-moon"></i>
+				</div>
+				<div class="user-avatar">
+					<img src="{% static 'images/admin.png' %}" alt="Admin">
+				</div>
+				<a href="/logout" style="color: var(--danger-color); text-decoration: none;">
+					<i class="fas fa-sign-out-alt"></i>
+				</a>
+			</div>
+		</div>
+
+		<!-- Content Area -->
+	<div class="content">
+		{% block content %}
+			{% endblock %}
+	</div>
+</div>
+
+	<!-- Scripts -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+	<script>
+		// Theme Toggle
+		const themeToggle = document.querySelector('.theme-toggle');
+		const body = document.body;
+		
+		themeToggle.addEventListener('click', () => {
+			body.classList.toggle('dark-theme');
+			const icon = themeToggle.querySelector('i');
+			icon.classList.toggle('fa-moon');
+			icon.classList.toggle('fa-sun');
+		});
+
+		// Mobile Menu Toggle
+		const menuToggle = document.querySelector('.menu-toggle');
+		const sidebar = document.querySelector('.sidebar');
+		
+		menuToggle?.addEventListener('click', () => {
+			sidebar.classList.toggle('active');
+		});
+	</script>
+</body>
+</html>

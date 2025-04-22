@@ -1,0 +1,115 @@
+{% extends 'vehicle/customerbase.html' %}
+{% load static %}
+{% block content %}
+<style>
+  .profile-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+  }
+  
+  .profile-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    transition: all 0.3s ease;
+  }
+  
+  .profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .profile-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin: 0 auto 30px;
+    display: block;
+    border: 5px solid #2563EB;
+    transition: all 0.3s ease;
+  }
+  
+  .profile-image:hover {
+    transform: scale(1.05);
+  }
+  
+  .profile-info {
+    text-align: center;
+  }
+  
+  .info-item {
+    margin-bottom: 15px;
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .info-item:hover {
+    background: #f1f5f9;
+    transform: translateX(5px);
+  }
+  
+  .info-label {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .info-value {
+    color: #1e293b;
+    font-size: 18px;
+    font-weight: 500;
+  }
+  
+  .edit-button {
+    display: inline-block;
+    padding: 12px 30px;
+    background: #2563EB;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+  }
+  
+  .edit-button:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: white;
+  }
+</style>
+
+<div class="profile-container">
+  <div class="profile-card">
+    <img class="profile-image" src="{% static customer.profile_pic.url %}" alt="Profile Picture">
+    
+    <div class="profile-info">
+      <div class="info-item">
+        <div class="info-label">Name</div>
+        <div class="info-value">{{customer}}</div>
+      </div>
+      
+      <div class="info-item">
+        <div class="info-label">Mobile</div>
+        <div class="info-value">{{customer.mobile}}</div>
+      </div>
+      
+      <div class="info-item">
+        <div class="info-label">Address</div>
+        <div class="info-value">{{customer.address}}</div>
+      </div>
+      
+      <a href="/edit-customer-profile" class="edit-button">
+        <i class="fas fa-edit"></i> Edit Profile
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock content %}

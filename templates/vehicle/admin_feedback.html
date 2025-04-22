@@ -1,0 +1,33 @@
+{% extends 'vehicle/adminbase.html' %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Customer & Mechanic Feedback</h4>
+                </div>
+                <div class="card-body">
+                    {% if feedback %}
+                        {% for f in feedback %}
+                            <div class="alert alert-light border shadow-sm mb-3 position-relative fade show">
+                                <button type="button" class="btn-close position-absolute top-0 end-0 mt-2 me-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge bg-primary me-2">{{f.by}}</span>
+                                    <small class="text-muted">{{f.date}}</small>
+                                </div>
+                                <p class="mb-0">{{f.message}}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-muted mb-0">No feedback available</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

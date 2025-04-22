@@ -1,0 +1,325 @@
+{% extends 'vehicle/mechanicbase.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .dashboard-container {
+        padding: 1.5rem;
+    }
+
+    .welcome-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .welcome-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .welcome-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e3f2fd;
+        color: #1976d2;
+        border-radius: 12px;
+        font-size: 1.5rem;
+    }
+
+    .welcome-text h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+        color: #212529;
+    }
+
+    .welcome-text p {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .stat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-size: 1.5rem;
+    }
+
+    .stat-title {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+        color: #212529;
+    }
+
+    .quick-actions {
+        background: #fff;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .quick-actions h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #212529;
+    }
+
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #fff;
+        transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        color: #fff;
+    }
+
+    .action-btn i {
+        font-size: 1.25rem;
+    }
+
+    .recent-work {
+        background: #fff;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .recent-work h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #212529;
+    }
+
+    .work-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .work-table th {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #6c757d;
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .work-table td {
+        padding: 1rem 0.75rem;
+        font-size: 0.875rem;
+        color: #495057;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .work-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .work-table tr:hover {
+        background: #f8f9fa;
+    }
+
+    .status-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .status-badge.pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-badge.in-progress {
+        background: #cce5ff;
+        color: #004085;
+    }
+
+    .status-badge.completed {
+        background: #d4edda;
+        color: #155724;
+    }
+</style>
+
+<div class="dashboard-container">
+    <!-- Welcome Section -->
+    <div class="welcome-card">
+        <div class="welcome-header">
+            <div class="welcome-icon">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="welcome-text">
+                <h2>Welcome, {{mechanic.get_name}}</h2>
+                <p>Manage your work assignments and track progress</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-header">
+                <div>
+                    <p class="stat-title">Work in Progress</p>
+                    <h3 class="stat-value">{{work_in_progress}}</h3>
+                </div>
+                <div class="stat-icon" style="background: #e8f5e9; color: #2e7d32;">
+                    <i class="fas fa-tools"></i>
+                </div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <div>
+                    <p class="stat-title">Work Completed</p>
+                    <h3 class="stat-value">{{work_completed}}</h3>
+                </div>
+                <div class="stat-icon" style="background: #fff3e0; color: #ef6c00;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <div>
+                    <p class="stat-title">New Work Assigned</p>
+                    <h3 class="stat-value">{{new_work_assigned}}</h3>
+                </div>
+                <div class="stat-icon" style="background: #e3f2fd; color: #1976d2;">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <div>
+                    <p class="stat-title">Salary</p>
+                    <h3 class="stat-value">${{salary}}</h3>
+                </div>
+                <div class="stat-icon" style="background: #f3e5f5; color: #7b1fa2;">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="action-grid">
+            <a href="{% url 'mechanic-work-assigned' %}" class="action-btn" style="background: #1976d2;">
+                <i class="fas fa-tasks"></i>
+                <span>View Work</span>
+            </a>
+            <a href="{% url 'mechanic-attendance' %}" class="action-btn" style="background: #2e7d32;">
+                <i class="fas fa-calendar-check"></i>
+                <span>Attendance</span>
+            </a>
+            <a href="{% url 'mechanic-salary' %}" class="action-btn" style="background: #7b1fa2;">
+                <i class="fas fa-money-bill-wave"></i>
+                <span>Salary</span>
+            </a>
+            <a href="{% url 'mechanic-feedback' %}" class="action-btn" style="background: #ef6c00;">
+                <i class="fas fa-comment"></i>
+                <span>Feedback</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Work -->
+    <div class="recent-work">
+        <h2>Recent Work Assigned</h2>
+        <div class="table-responsive">
+            <table class="work-table">
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Vehicle</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for work in works %}
+                    <tr>
+                        <td>{{work.customer.get_name}}</td>
+                        <td>{{work.vehicle_name}}</td>
+                        <td>{{work.category}}</td>
+                        <td>
+                            <span class="status-badge {% if work.status == 'Pending' %}pending{% elif work.status == 'Repairing' %}in-progress{% else %}completed{% endif %}">
+                                {{work.status}}
+                            </span>
+                        </td>
+                        <td>{{work.date}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends 'vehicle/customerbase.html' %}
+{% block content %}
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    .table-container {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .table-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .table-title {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table th {
+        background: #f8f9fa;
+        padding: 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #6c757d;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .table td {
+        padding: 1rem;
+        font-size: 0.875rem;
+        color: #495057;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table tr:hover {
+        background: #f8f9fa;
+    }
+
+    .amount {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    .btn-download {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 4px;
+        background: #e9ecef;
+        color: #495057;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-download:hover {
+        background: #dee2e6;
+        color: #212529;
+    }
+
+    .empty-state {
+        padding: 3rem;
+        text-align: center;
+        color: #6c757d;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #dee2e6;
+    }
+
+    .empty-state p {
+        margin: 0;
+        font-size: 1rem;
+    }
+</style>
+
+<div class="page-header">
+    <h1 class="page-title">Invoices</h1>
+</div>
+
+<div class="table-container">
+    <div class="table-header">
+        <h2 class="table-title">Payment History</h2>
+    </div>
+
+    {% if bills %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Invoice ID</th>
+                <th>Service Request</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bill in bills %}
+            <tr>
+                <td>#{{bill.id}}</td>
+                <td>{{bill.service_request.problem_description}}</td>
+                <td>{{bill.bill_date}}</td>
+                <td class="amount">${{bill.amount}}</td>
+                <td>
+                    <span class="status-badge {% if bill.status == 'Paid' %}status-approved{% else %}status-pending{% endif %}">
+                        {{bill.status}}
+                    </span>
+                </td>
+                <td>
+                    <a href="{% url 'customer-download-invoice' bill.id %}" class="btn-download">
+                        <i class="fas fa-download"></i> Download
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-file-invoice"></i>
+        <p>No invoices found. Your invoices will appear here after service completion.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

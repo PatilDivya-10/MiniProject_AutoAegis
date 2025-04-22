@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+    <title>AutoAegis</title>
+  <style media="screen">
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background: #f8fafc;
+      }
+
+      .menu-container {
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 1000;
+        padding: 20px;
+      }
+
+      .menu-toggle {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .menu-line {
+        width: 25px;
+        height: 2px;
+        background: #2563EB;
+        margin: 3px 0;
+        transition: all 0.3s ease;
+        transform-origin: center;
+      }
+
+      .menu-toggle.active .menu-line:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+      }
+
+      .menu-toggle.active .menu-line:nth-child(2) {
+        opacity: 0;
+      }
+
+      .menu-toggle.active .menu-line:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+      }
+
+      .navbar {
+        position: fixed;
+        top: 0;
+        right: -250px;
+        width: 250px;
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: -2px 0 15px rgba(0,0,0,0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+        padding: 80px 15px 20px;
+        border-left: 1px solid rgba(0,0,0,0.1);
+        transform: translateX(100%);
+      }
+
+      .navbar.active {
+        right: 0;
+        transform: translateX(0);
+      }
+
+      .navbar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .navbar li {
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        transform: translateX(15px);
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+
+      .navbar.active li {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      .navbar li:nth-child(1) { transition-delay: 0.1s; }
+      .navbar li:nth-child(2) { transition-delay: 0.2s; }
+      .navbar li:nth-child(3) { transition-delay: 0.3s; }
+      .navbar li:nth-child(4) { transition-delay: 0.4s; }
+      .navbar li:nth-child(5) { transition-delay: 0.5s; }
+      .navbar li:nth-child(6) { transition-delay: 0.6s; }
+
+      .navbar a {
+        color: #1e293b;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        transition: all 0.3s ease;
+      }
+
+      .navbar a:hover {
+        color: #2563EB;
+        transform: translateX(5px);
+      }
+
+      .navbar a::before {
+        content: '';
+        width: 0;
+        height: 2px;
+        background: #2563EB;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        transition: width 0.3s ease;
+      }
+
+      .navbar a:hover::before {
+        width: 100%;
+      }
+
+      .brand-name {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 52px;
+        font-weight: 800;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        position: relative;
+        display: block;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+      }
+
+      .brand-name::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: white;
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.3s ease;
+      }
+
+      .brand-name:hover::after {
+        transform: scaleX(1);
+        transform-origin: left;
+      }
+
+      .hero-section {
+        background: linear-gradient(135deg, #2563EB 0%, #1d4ed8 100%);
+        color: white;
+        padding: 80px 0;
+        text-align: center;
+        position: relative;
+      }
+
+      .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .hero-title {
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        animation: fadeInUp 1s ease;
+        color: white;
+      }
+
+      .hero-title .brand-name {
+        margin-bottom: 30px;
+      }
+
+      .hero-subtitle {
+        font-size: 20px;
+        opacity: 0.9;
+        margin-bottom: 30px;
+        animation: fadeInUp 1s ease 0.2s;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        animation: fadeInUp 1s ease 0.4s;
+      }
+
+      .btn {
+        padding: 12px 30px;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: white;
+        color: #2563EB;
+      }
+
+      .btn-outline {
+        border: 2px solid white;
+        color: white;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .features-section {
+        padding: 80px 0;
+        background: white;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .feature-card {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .feature-icon {
+        font-size: 40px;
+        color: #2563EB;
+        margin-bottom: 20px;
+      }
+
+      .feature-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #1e293b;
+      }
+
+      .feature-description {
+        color: #64748b;
+        line-height: 1.6;
+      }
+
+      .stats-section {
+        background: #f1f5f9;
+        padding: 60px 0;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .stat-card {
+        text-align: center;
+        padding: 20px;
+      }
+
+      .stat-number {
+        font-size: 36px;
+        font-weight: 700;
+        color: #2563EB;
+        margin-bottom: 10px;
+      }
+
+      .stat-label {
+        color: #64748b;
+        font-size: 16px;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .about-section {
+        padding: 80px 0;
+        background: white;
+      }
+
+      .about-content {
+        max-width: 800px;
+        margin: 0 auto;
+      text-align: center;
+        padding: 0 20px;
+      }
+
+      .section-title {
+        font-size: 32px;
+        color: #1e293b;
+        margin-bottom: 20px;
+      }
+
+      .section-description {
+        color: #64748b;
+        line-height: 1.8;
+        font-size: 18px;
+    }
+  </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="menu-container">
+      <div class="menu-toggle" onclick="toggleMenu()">
+        <div class="menu-line"></div>
+        <div class="menu-line"></div>
+        <div class="menu-line"></div>
+      </div>
+    </div>
+
+    <nav class="navbar">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/customersignup">Customer Signup</a></li>
+        <li><a href="/customerlogin">Customer Login</a></li>
+        <li><a href="/mechanicsignup">Mechanic Signup</a></li>
+        <li><a href="/mechaniclogin">Mechanic Login</a></li>
+        <li><a href="/adminlogin">Admin Login</a></li>
+      </ul>
+    </nav>
+
+    <script>
+      function toggleMenu() {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navbar = document.querySelector('.navbar');
+        menuToggle.classList.toggle('active');
+        navbar.classList.toggle('active');
+      }
+
+      // Close menu when clicking outside
+      document.addEventListener('click', function(event) {
+        const navbar = document.querySelector('.navbar');
+        const menuToggle = document.querySelector('.menu-toggle');
+        
+        if (!navbar.contains(event.target) && !menuToggle.contains(event.target)) {
+          navbar.classList.remove('active');
+          menuToggle.classList.remove('active');
+        }
+      });
+    </script>
+
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="brand-name">AutoAegis</span>
+          Track Your Vehicle Maintenance with Ease
+        </h1>
+        <p class="hero-subtitle">Streamline your vehicle maintenance, reduce costs, and ensure your vehicles are always in top condition.</p>
+        <div class="cta-buttons">
+          <a href="/customersignup" class="btn btn-primary">Get Started</a>
+          <a href="/customerlogin" class="btn btn-outline">Login</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="features-section">
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🚗</div>
+          <h3 class="feature-title">Vehicle Management</h3>
+          <p class="feature-description">Easily track all your vehicles in one place. Monitor maintenance schedules, service history, and vehicle details.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔧</div>
+          <h3 class="feature-title">Maintenance Tracking</h3>
+          <p class="feature-description">Never miss a service again. Get automated reminders for upcoming maintenance and service appointments.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💰</div>
+          <h3 class="feature-title">Cost Management</h3>
+          <p class="feature-description">Track all maintenance costs and expenses. Generate reports to analyze your vehicle maintenance budget.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">Access Anywhere</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Reliable Tracking</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">50%</div>
+          <div class="stat-label">Cost Reduction</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">1000+</div>
+          <div class="stat-label">Happy Users</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <div class="about-content">
+        <h2 class="section-title">Why Choose Our Vehicle Maintenance Tracker?</h2>
+        <p class="section-description">
+          Our platform is designed to make vehicle maintenance simple and efficient. Whether you're managing a single vehicle or an entire fleet, 
+          our tools help you stay on top of maintenance schedules, reduce unexpected breakdowns, and optimize your maintenance costs. 
+          Join thousands of satisfied users who have transformed their vehicle maintenance management.
+        </p>
+  </div>
+    </section>
+
+  {% include "vehicle/footer.html" %}
+</body>
+</html>
